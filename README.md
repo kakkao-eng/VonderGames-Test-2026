@@ -2,86 +2,78 @@
 
 ## System 1: Time System
 
-## Overview
-This project implements a modular Time Hop system in Unity.
-The system handles time progression (Morning → Afternoon → Evening),
-a weekly cycle (Monday → Sunday), and supports infinite day tracking.
+### Initial Planning
 
-Time transitions are triggered via in-game collider interactions.
+Before implementation, the system was broken down into modular components:
 
----
+1. Core Time Logic
+2. Weekly Cycle Handling
+3. Infinite Day Tracking
+4. Event-Based Communication
+5. UI Integration
+6. Environmental Reaction (Lighting)
 
-## Features
-
-### 1. Time Division
-- Three time periods: Morning, Afternoon, Evening
-- Smooth progression:
-  Morning → Afternoon → Evening → Next Day
-
-### 2. Weekly Cycle
-- 7-day loop (Monday → Sunday)
-- Automatically wraps using modulo logic
-
-### 3. Infinite Day Tracking
-- Tracks total number of days elapsed
-
-### 4. Event-Driven Architecture
-- Uses C# events (`OnTimeChanged`)
-- Decouples systems (UI, Lighting, etc.) from TimeManager
-
-### 5. Reactive Systems
-- UI updates automatically when time changes
-- Lighting system reacts to time period
+The goal was to design the system in a scalable and decoupled way,
+allowing future systems (e.g., NPC schedules, weather) to react to time changes.
 
 ---
 
-## Architecture Design
+## Task Breakdown & Time Estimation
 
-### Separation of Concerns
-- `TimeManager` handles logic and progression
-- `TimeEnums` defines time-related data
-- `TimeUI` handles presentation
-- `TimeLighting` handles environmental visuals
+### Phase 1: System Design
+- Define time states (Morning, Afternoon, Evening)
+- Define weekly cycle structure
+- Decide on event-driven architecture
+- Separate enums from MonoBehaviour
 
-### Event-Based Communication
-Instead of polling in Update(), systems subscribe to
-`TimeManager.OnTimeChanged`.
+Estimated Time: 1 hours  
+Actual Time: 1.5 hours  
 
-This ensures:
-- No unnecessary per-frame checks
-- Scalable architecture
-- Clean system decoupling
+Reflection:
+Additional time was spent restructuring enums after realizing they should not inherit from MonoBehaviour. This improved overall architecture clarity.
 
 ---
 
-## Technical Decisions
+### Phase 2: Core Implementation
+- Implement TimeManager
+- Implement time progression logic
+- Implement modulo-based weekday looping
+- Add total day tracking
 
-### Why use Enum?
-Enums provide readable and type-safe time states.
+Estimated Time: 1 hours
+Actual Time: 2 hours
 
-### Why use Modulo for Weekday?
-Ensures seamless looping:
-(int)CurrentWeekDay + 1 % 7
-
-### Why not store Color in Enum?
-Time state is separated from presentation logic.
-Lighting system maps time states to visual representation.
-
----
-
-## How to Test
-1. Enter Play Mode
-2. Walk into the designated collider trigger
-3. Observe:
-   - Time progression
-   - Day increment
-   - UI update
-   - Lighting change
+Reflection:
+Time estimation was close. Most effort was spent ensuring correct day wrapping using modulo logic and validating state transitions.
 
 ---
 
-## Possible Extensions
-- Weather system integration
-- NPC schedule system
-- Save/Load time state
-- Smooth transition effects
+### Phase 3: System Integration
+- Implement UI system with event subscription
+- Implement lighting system reacting to time
+- Ensure decoupling between systems
+- Debug namespace and event reference issues
+
+Estimated Time: 2 hours  
+Actual Time: 2 hours  
+
+Reflection:
+Integration required additional debugging related to enum structure and event references. This reinforced the importance of clean separation between data and Unity components.
+
+---
+
+## Overall Time Management Review
+
+Total Estimated Time: 4 hours  
+Total Actual Time: ~5.5 hours  
+
+The implementation slightly exceeded the original estimate due to
+refactoring and debugging structural issues.
+
+However, the final architecture is modular, event-driven, and scalable,
+which aligns with the original design goals.
+
+Future improvements would include:
+- Planning namespace structure earlier
+- Preparing enum definitions before component implementation
+- Allocating additional buffer time for debugging
