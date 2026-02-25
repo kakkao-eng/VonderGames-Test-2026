@@ -77,3 +77,57 @@ Future improvements would include:
 - Planning namespace structure earlier
 - Preparing enum definitions before component implementation
 - Allocating additional buffer time for debugging
+
+## System 2: Inventory System
+
+### Initial Planning
+
+The inventory system was designed to handle data-driven item management while maintaining a clear separation between logic (Manager) and presentation (UI).
+
+1. **Item Identity:** Using `ScriptableObject` to define immutable item data.
+2. **Inventory Logic:** Implementing a flexible slot-based system that handles stacking and overflow.
+3. **Dynamic UI:** Creating a UI that automatically synchronizes with the inventory state.
+4. **Interaction Layer:** Handling item selection and usage based on the currently active slot.
+
+---
+
+## Task Breakdown & Time Estimation
+
+### Phase 1: Core Data & Logic Implementation
+- Created `ItemData` ScriptableObject for modular item creation.
+- Implemented `InventoryManager` with automated slot initialization.
+- Developed **Stacking Logic** to check for existing item stacks before filling empty slots.
+
+**Estimated Time:** 1 hours  
+**Actual Time:** 1 hours  
+
+**Reflection:** The stacking logic required careful boundary checks (using `Mathf.Min`) to ensure items don't exceed `maxStack` when distributed across multiple slots.
+
+---
+
+### Phase 2: UI Synchronization & Selection
+- Developed `InventoryUI` to dynamically instantiate slots based on `inventorySize`.
+- Implemented an **Event-Driven UI update** using `System.Action` to reduce per-frame overhead.
+- Added a **Selection/Highlight system** mapped to Alpha keys (1-9) for quick access.
+
+**Estimated Time:** 2 hours  
+**Actual Time:** 1 hours  
+
+**Reflection:** Integrating `TMP_Text` and `Image` components for dynamic updates required a clear naming convention in the Prefab hierarchy to ensure `transform.Find()` works reliably.
+
+---
+
+
+
+---
+
+## Overall Time Management Review
+
+**Total Estimated Time:** 5 hours  
+**Total Actual Time:** -- hours  
+
+### Assumptions & Challenges
+
+
+### Future Improvements
+
