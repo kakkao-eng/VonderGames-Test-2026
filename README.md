@@ -81,7 +81,6 @@ Future improvements would include:
 ## System 2: Inventory System
 
 ### Initial Planning
-
 The inventory system was designed to handle data-driven item management while maintaining a clear separation between logic (Manager) and presentation (UI).
 
 1. **Item Identity:** Using `ScriptableObject` to define immutable item data.
@@ -111,23 +110,42 @@ The inventory system was designed to handle data-driven item management while ma
 - Added a **Selection/Highlight system** mapped to Alpha keys (1-9) for quick access.
 
 **Estimated Time:** 2 hours  
-**Actual Time:** 1 hours  
+**Actual Time:** 2 hours  
 
 **Reflection:** Integrating `TMP_Text` and `Image` components for dynamic updates required a clear naming convention in the Prefab hierarchy to ensure `transform.Find()` works reliably.
 
 ---
 
+### Phase 3: Interaction, Organizing & Item Usage
+- **Organize Logic:** Implemented a robust Click-to-Swap system, allowing users to reorder their inventory effortlessly.
+- **Item Usage System:** Developed a dynamic `UseItem` function with a switch-case logic based on `ItemType`.
+- **Discarding Items:** Added a Right-Click to Remove feature for item disposal.
 
+**Estimated Time:** 2 hours  
+**Actual Time:** 2 hours  
+
+**Reflection:** สารภาพตามตรงว่าการทำระบบ UI เป็นสิ่งที่ผมไม่ชอบ รู้สึกง่วงนอนในขณะที่ทำ (To be honest, I find UI development quite tedious and it often makes me feel very sleepy).
 
 ---
 
 ## Overall Time Management Review
 
 **Total Estimated Time:** 5 hours  
-**Total Actual Time:** -- hours  
+**Total Actual Time:** 5 hours  
 
-### Assumptions & Challenges
+---
 
+## Assumptions & Challenges
 
-### Future Improvements
+* **Data Consistency:** ยึดหลัก "Single Source of Truth" โดยให้ UI ดึงข้อมูลจาก `InventoryManager` เท่านั้น เพื่อป้องกันปัญหาข้อมูลไม่ตรงกัน
+* **Event Handling:** ใช้ `System.Action` เพื่อให้ UI อัปเดตเฉพาะเมื่อมีการเปลี่ยนแปลงข้อมูล ลดภาระการประมวลผลใน `Update()`
+* **UI Hierarchy:** การจัดการ UI Sorting และ Raycast Management เป็นเรื่องที่ท้าทาย เพื่อให้แน่ใจว่าการคลิกเลือกช่องไอเทมมีความแม่นยำและลื่นไหลที่สุด
 
+---
+
+## Future Improvements
+
+* **Drag & Drop Implementation:** เพิ่มการลากวางแบบมี Icon วิ่งตามเมาส์เพื่อให้ดูทันสมัยขึ้น
+* **Persistence (Save/Load):** ระบบบันทึกข้อมูลไอเทมลงไฟล์เพื่อให้ข้อมูลไม่หายเมื่อปิดเกม
+* **Contextual Feedback:** เพิ่ม Sound Effect และอนิเมชั่นเวลาสลับของหรือใช้ไอเทม (Game Juice)
+* **Advanced Stacking:** ฟีเจอร์การแบ่งกองไอเทม (Split Stack) เพื่อการจัดการไอเทมที่ละเอียดขึ้น
