@@ -1,16 +1,24 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager Instance;
 
-    public int inventorySize = 10;
+    public int inventorySize = 40;
 
     public List<InventorySlot> slots = new List<InventorySlot>();
 
-    public System.Action OnInventoryChanged;
+    public Action OnInventoryChanged;
+
+    [Header("Drag & Drop")]
+    public Image dragIcon; // ลาก DragIcon จาก Hierarchy มาใส่
+    private int draggingIndex = -1;
+
+    [Header("Starting Items")]
+    public List<ItemData> startingItems = new List<ItemData>();
 
     private void Awake()
     {
@@ -32,27 +40,22 @@ public class InventoryManager : MonoBehaviour
 
     public bool AddItem(ItemData itemToAdd, int amount)
     {
+        // เช็ค Stack เดิมก่อน
         foreach (var slot in slots)
         {
             if (!slot.IsEmpty && slot.item == itemToAdd)
             {
                 int spaceLeft = slot.item.maxStack - slot.quantity;
-
                 if (spaceLeft > 0)
                 {
                     int amountToAdd = Mathf.Min(spaceLeft, amount);
                     slot.quantity += amountToAdd;
                     amount -= amountToAdd;
-
-                    if (amount <= 0)
-                    {
-                        OnInventoryChanged?.Invoke();
-                        return true;
-                    }
+                    if (amount <= 0) { OnInventoryChanged?.Invoke(); return true; }
                 }
             }
         }
-
+        // ถ้าเหลือ หาช่องว่างใหม่
         foreach (var slot in slots)
         {
             if (slot.IsEmpty)
@@ -61,15 +64,9 @@ public class InventoryManager : MonoBehaviour
                 slot.item = itemToAdd;
                 slot.quantity = amountToAdd;
                 amount -= amountToAdd;
-
-                if (amount <= 0)
-                {
-                    OnInventoryChanged?.Invoke();
-                    return true;
-                }
+                if (amount <= 0) { OnInventoryChanged?.Invoke(); return true; }
             }
         }
-
         OnInventoryChanged?.Invoke();
         return false;
     }
@@ -161,5 +158,98 @@ public class InventoryManager : MonoBehaviour
             // แจ้งเตือน UI ให้วาดใหม่
             OnInventoryChanged?.Invoke();
         }
+    }
+
+
+    public int GetTotalItemCount(string itemName)
+    {
+        int total = 0;
+        foreach (var slot in slots)
+        {
+            if (slot.item != null && slot.item.itemName == itemName)
+            {
+                total += slot.quantity;
+            }
+        }
+        return total;
+    }
+
+
+
+    public void RemoveItems(string itemName, int amountToRemove)
+    {
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (amountToRemove <= 0) break;
+
+            if (slots[i].item != null && slots[i].item.itemName == itemName)
+            {
+                if (slots[i].quantity <= amountToRemove)
+                {
+                    amountToRemove -= slots[i].quantity;
+                    slots[i].Clear();
+                }
+                else
+                {
+                    slots[i].quantity -= amountToRemove;
+                    amountToRemove = 0;
+                }
+            }
+        }
+        OnInventoryChanged?.Invoke();
+
+
+    }
+
+    public void StartDragging(int index)
+    {
+        // เช็คว่าช่องที่จะลากมีของไหม
+        if (InventoryManager.Instance.slots[index].item == null) return;
+
+        draggingIndex = index;
+        dragIcon.sprite = InventoryManager.Instance.slots[index].item.icon;
+        dragIcon.gameObject.SetActive(true);
+        dragIcon.rectTransform.position = Input.mousePosition;
+    }
+
+    public void UpdateDragPosition(Vector2 position)
+    {
+        if (draggingIndex != -1) dragIcon.rectTransform.position = position;
+    }
+
+    public void EndDragging()
+    {
+        draggingIndex = -1;
+        dragIcon.gameObject.SetActive(false);
+    }
+
+    public void DropOnSlot(int targetIndex)
+    {
+        if (draggingIndex != -1 && draggingIndex != targetIndex)
+        {
+            InventorySlot temp = slots[draggingIndex];
+            slots[draggingIndex] = slots[targetIndex];
+            slots[targetIndex] = temp;
+
+            OnInventoryChanged?.Invoke();
+        }
+    }
+
+    void AddStartingItems()
+    {
+        foreach (ItemData item in startingItems)
+        {
+            
+            AddItem(item, 20);
+        }
+
+        // แจ้งเตือน UI ให้วาดรูปไอเทมเริ่มต้นขึ้นมา
+        OnInventoryChanged?.Invoke();
+    }
+
+    void Start()
+    {
+        // เรียกใช้งานหลังจาก Initialize ทุกอย่างเสร็จแล้ว
+        AddStartingItems();
     }
 }
