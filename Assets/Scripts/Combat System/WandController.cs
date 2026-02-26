@@ -40,11 +40,21 @@ public class WandController : MonoBehaviour
         }
     }
 
-    private void Shoot()
+    // ตรงส่วนที่สั่งยิงใน WandController
+    void Shoot()
     {
-        currentAP -= apCostPerShot;
-        Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
-        Debug.Log($"Current AP: {currentAP}");
+        GameObject bullet = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
+        Projectile projectileScript = bullet.GetComponent<Projectile>();
+
+        if (projectileScript != null)
+        {
+            float lookDirection = transform.lossyScale.x > 0 ? 1f : -1f;
+            projectileScript.SetDirection(new Vector2(lookDirection, 0));
+
+            currentAP -= apCostPerShot;
+            Debug.Log("Current AP: " + currentAP);
+            
+        }
     }
 
     public void ResetAP()
