@@ -33,15 +33,17 @@ public class SlimeAI : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        // ถ้าชนผู้เล่น ให้ลดเลือดผู้เล่น
-        if (collision.gameObject.CompareTag("Player"))
+        // ตรวจสอบ Tag ของผู้เล่น
+        if (other.CompareTag("Player"))
         {
-            Health playerHealth = collision.gameObject.GetComponent<Health>();
+            // ค้นหาสคริปต์ Health ที่ตัวผู้เล่น
+            Health playerHealth = other.GetComponent<Health>();
             if (playerHealth != null)
             {
                 playerHealth.TakeDamage(contactDamage);
+                Debug.Log("Slime dealt damage to Player!");
             }
         }
     }

@@ -37,4 +37,6 @@ public class SlimeSplitter : MonoBehaviour
         // ทำลายสไลม์ตัวที่ตาย
         Destroy(gameObject);
     }
+
+
 }

@@ -704,7 +704,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 6.63
+  orthographic size: 5.16
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -729,7 +729,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.18163586, y: -0.24999988, z: -10}
+  m_LocalPosition: {x: 0.057911873, y: 0.06384897, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1495,6 +1495,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7201958871488397753, guid: 46eb7131a1e10d64a845189aff2fb858, type: 3}
+      propertyPath: m_Radius
+      value: 0.79694605
+      objectReference: {fileID: 0}
+    - target: {fileID: 7201958871488397753, guid: 46eb7131a1e10d64a845189aff2fb858, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.29694605
+      objectReference: {fileID: 0}
+    - target: {fileID: 7201958871488397753, guid: 46eb7131a1e10d64a845189aff2fb858, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7419418046185053034, guid: 46eb7131a1e10d64a845189aff2fb858, type: 3}
+      propertyPath: m_Simulated
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7419418046185053034, guid: 46eb7131a1e10d64a845189aff2fb858, type: 3}
+      propertyPath: m_Constraints
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7419418046185053034, guid: 46eb7131a1e10d64a845189aff2fb858, type: 3}
+      propertyPath: m_GravityScale
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1583,7 +1607,7 @@ Transform:
   m_GameObject: {fileID: 1524469437}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.9425955, y: -1.1207803, z: 0}
+  m_LocalPosition: {x: -1.9425955, y: -2.71, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2098,7 +2122,7 @@ Transform:
   m_GameObject: {fileID: 1898153579}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.9425955, y: -1.1207803, z: 10}
+  m_LocalPosition: {x: -1.9425955, y: -2.71, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2127,7 +2151,7 @@ MonoBehaviour:
   m_Follow: {fileID: 1524469440}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 6.63
+    OrthographicSize: 5.16
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -2173,7 +2197,7 @@ GameObject:
   - component: {fileID: 1993528536}
   m_Layer: 0
   m_Name: FirePoint
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2302,7 +2326,7 @@ PolygonCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -2317,11 +2341,11 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 38.6011, y: 5.6513195}
-      - {x: -11.115219, y: 5.589102}
-      - {x: -11.180954, y: -5.066085}
-      - {x: 38.65194, y: -5.089896}
-      - {x: 38.658474, y: 0.1663211}
+    - - {x: 38.244358, y: 5.2589054}
+      - {x: -10.794153, y: 5.1966877}
+      - {x: -10.503147, y: -4.5666485}
+      - {x: 38.2952, y: -4.59046}
+      - {x: 38.194714, y: 0.20199496}
   m_UseDelaunayMesh: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
