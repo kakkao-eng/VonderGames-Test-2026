@@ -1,151 +1,88 @@
-# 2026 Game Developer Technical Test – Aether Wizard Life
+# 🧙‍♂️ 2026 Game Developer Technical Test – Aether Wizard Life
 
-## System 1: Time System
-
-### Initial Planning
-
-Before implementation, the system was broken down into modular components:
-
-1. Core Time Logic
-2. Weekly Cycle Handling
-3. Infinite Day Tracking
-4. Event-Based Communication
-5. UI Integration
-6. Environmental Reaction (Lighting)
-
-The goal was to design the system in a scalable and decoupled way,
-allowing future systems (e.g., NPC schedules, weather) to react to time changes.
+A modular 2D side-scroller project focusing on scalable architecture and efficient data management.
 
 ---
 
-## Task Breakdown & Time Estimation
+## 🕒 System 1: Time System
+An **Event-Based** time system designed to support future world mechanics such as NPC schedules and dynamic weather.
 
-### Phase 1: System Design
-- Define time states (Morning, Afternoon, Evening)
-- Define weekly cycle structure
-- Decide on event-driven architecture
-- Separate enums from MonoBehaviour
+### 🏗️ Initial Planning
+- **Decoupled Design:** Separated core logic from UI to ensure modularity.
+- **Cycle Management:** Implemented weekly cycles and infinite day tracking.
+- **Communication:** Used C# Actions/Events for system-wide notifications.
 
-Estimated Time: 1 hours  
-Actual Time: 1.5 hours  
+### 📊 Task Breakdown & Time Log
+| Phase | Task Details | Estimated | Actual |
+| :--- | :--- | :--- | :--- |
+| **1. System Design** | Define time states, weekly structure, and event architecture. | 1 hr | 1.5 hrs |
+| **2. Implementation** | Developed `TimeManager`, progression logic, and modulo-based day wrapping. | 1 hr | 2 hrs |
+| **3. Integration** | UI event subscription and environmental lighting synchronization. | 2 hrs | 2 hrs |
 
-Reflection:
-Additional time was spent restructuring enums after realizing they should not inherit from MonoBehaviour. This improved overall architecture clarity.
+**Estimated Time:** 5.5 Hours
 
----
+**Actual Time:** 5 Hours
 
-### Phase 2: Core Implementation
-- Implement TimeManager
-- Implement time progression logic
-- Implement modulo-based weekday looping
-- Add total day tracking
-
-Estimated Time: 1 hours
-Actual Time: 2 hours
-
-Reflection:
-Time estimation was close. Most effort was spent ensuring correct day wrapping using modulo logic and validating state transitions.
+### 📝 Reflection
+- **Architectural Clarity:** Spent extra time refactoring Enums to be independent of `MonoBehaviour` to ensure cleaner code.
+- **Technical Challenge:** Managing "Day Wrapping" logic using Modulo was crucial to prevent index out of bounds while validating state transitions.
 
 ---
 
-### Phase 3: System Integration
-- Implement UI system with event subscription
-- Implement lighting system reacting to time
-- Ensure decoupling between systems
-- Debug namespace and event reference issues
+## 🎒 System 2: Inventory System
+A data-driven inventory system focused on **Data Consistency** and responsive user interaction.
 
-Estimated Time: 2 hours  
-Actual Time: 2 hours  
+### 🎮 Controls & Interaction (For Testing)
+* **Testing Commands:**
+    * **Press [1]:** Add a random item to the inventory.
+    * **Press [2]:** Remove an item from the inventory.
+* **Interaction Logic:**
+    * **Left-Click:** Select an item, then click another slot to **Swap/Move**.
+    * **Right-Click:** **Discard** the item in that slot.
+* **Navigation:**
+    * **Numeric Keys [1-9]:** Select active hotbar slot.
 
-Reflection:
-Integration required additional debugging related to enum structure and event references. This reinforced the importance of clean separation between data and Unity components.
+### 🏗️ Initial Planning
+- **Item Identity:** Utilized `ScriptableObject` for easily extendable item definitions.
+- **Separation of Concerns:** Clear distinction between `InventoryManager` (Logic) and `InventoryUI` (Presentation).
 
----
+### 📊 Task Breakdown & Time Log
+| Phase | Task Details | Estimated | Actual |
+| :--- | :--- | :--- | :--- |
+| **1. Data & Logic** | Created `ItemData`, Slot system, and Stacking Logic. | 1 hr | 1 hr |
+| **2. UI & Selection** | Dynamic slot instantiation and Hotbar selection system (Alpha 1-9). | 2 hrs | 2 hrs |
+| **3. Interaction** | Implemented Click-to-Swap, Item Usage, and Discard functionality. | 2 hrs | 2 hrs |
 
-## Overall Time Management Review
+**Estimated Time: 5 Hours**
 
-Total Estimated Time: 4 hours  
-Total Actual Time: ~5.5 hours  
+**Actual Time: 5 Hours**
 
-The implementation slightly exceeded the original estimate due to
-refactoring and debugging structural issues.
-
-However, the final architecture is modular, event-driven, and scalable,
-which aligns with the original design goals.
-
-Future improvements would include:
-- Planning namespace structure earlier
-- Preparing enum definitions before component implementation
-- Allocating additional buffer time for debugging
-
-## System 2: Inventory System
-
-### Initial Planning
-The inventory system was designed to handle data-driven item management while maintaining a clear separation between logic (Manager) and presentation (UI).
-
-1. **Item Identity:** Using `ScriptableObject` to define immutable item data.
-2. **Inventory Logic:** Implementing a flexible slot-based system that handles stacking and overflow.
-3. **Dynamic UI:** Creating a UI that automatically synchronizes with the inventory state.
-4. **Interaction Layer:** Handling item selection and usage based on the currently active slot.
+### 📝 Reflection
+- **Boundary Checks:** Used `Mathf.Min` in stacking logic to ensure items are distributed correctly without exceeding `maxStack`.
+- **Personal Insight:** To be honest, UI development is my least favorite task—I find it quite tedious and it often makes me feel unengaged. However, I pushed through to complete it to a professional standard, choosing a **Click-to-Swap** system over Drag-and-Drop to prioritize system stability (Stability over Complexity).
 
 ---
 
-## Task Breakdown & Time Estimation
+## 🧠 Assumptions & Challenges
 
-### Phase 1: Core Data & Logic Implementation
-- Created `ItemData` ScriptableObject for modular item creation.
-- Implemented `InventoryManager` with automated slot initialization.
-- Developed **Stacking Logic** to check for existing item stacks before filling empty slots.
-
-**Estimated Time:** 1 hours  
-**Actual Time:** 1 hours  
-
-**Reflection:** The stacking logic required careful boundary checks (using `Mathf.Min`) to ensure items don't exceed `maxStack` when distributed across multiple slots.
+* **Single Source of Truth:** The UI is strictly a visual reflection of the `InventoryManager` data to prevent "Data Desync" issues.
+* **Performance Optimization:** Used `System.Action` instead of per-frame checks in `Update()` to save CPU cycles.
+* **UI Management:** Managing UI sorting and Raycast targets was essential to ensure precise slot interaction.
 
 ---
 
-### Phase 2: UI Synchronization & Selection
-- Developed `InventoryUI` to dynamically instantiate slots based on `inventorySize`.
-- Implemented an **Event-Driven UI update** using `System.Action` to reduce per-frame overhead.
-- Added a **Selection/Highlight system** mapped to Alpha keys (1-9) for quick access.
+## 🚀 Future Improvements
 
-**Estimated Time:** 2 hours  
-**Actual Time:** 2 hours  
-
-**Reflection:** Integrating `TMP_Text` and `Image` components for dynamic updates required a clear naming convention in the Prefab hierarchy to ensure `transform.Find()` works reliably.
+* **Drag & Drop:** Implementation of a visual Drag Proxy for a modern UX feel.
+* **Data Persistence:** Save/Load system using JSON or Binary formatting.
+* **Game Juice:** Adding Sound Effects and Tweening (e.g., LeanTween) for smoother UI transitions.
+* **Advanced Stacking:** Implementing a "Split Stack" feature for granular item management.
 
 ---
 
-### Phase 3: Interaction, Organizing & Item Usage
-- **Organize Logic:** Implemented a robust Click-to-Swap system, allowing users to reorder their inventory effortlessly.
-- **Item Usage System:** Developed a dynamic `UseItem` function with a switch-case logic based on `ItemType`.
-- **Discarding Items:** Added a Right-Click to Remove feature for item disposal.
+## ⚔️ System 3: Combat System (In Progress)
 
-**Estimated Time:** 2 hours  
-**Actual Time:** 2 hours  
-
-**Reflection:** สารภาพตามตรงว่าการทำระบบ UI เป็นสิ่งที่ผมไม่ชอบ รู้สึกง่วงนอนในขณะที่ทำ (To be honest, I find UI development quite tedious and it often makes me feel very sleepy).
-
----
-
-## Overall Time Management Review
-
-**Total Estimated Time:** 5 hours  
-**Total Actual Time:** 5 hours  
-
----
-
-## Assumptions & Challenges
-
-* **Data Consistency:** ยึดหลัก "Single Source of Truth" โดยให้ UI ดึงข้อมูลจาก `InventoryManager` เท่านั้น เพื่อป้องกันปัญหาข้อมูลไม่ตรงกัน
-* **Event Handling:** ใช้ `System.Action` เพื่อให้ UI อัปเดตเฉพาะเมื่อมีการเปลี่ยนแปลงข้อมูล ลดภาระการประมวลผลใน `Update()`
-* **UI Hierarchy:** การจัดการ UI Sorting และ Raycast Management เป็นเรื่องที่ท้าทาย เพื่อให้แน่ใจว่าการคลิกเลือกช่องไอเทมมีความแม่นยำและลื่นไหลที่สุด
-
----
-
-## Future Improvements
-
-* **Drag & Drop Implementation:** เพิ่มการลากวางแบบมี Icon วิ่งตามเมาส์เพื่อให้ดูทันสมัยขึ้น
-* **Persistence (Save/Load):** ระบบบันทึกข้อมูลไอเทมลงไฟล์เพื่อให้ข้อมูลไม่หายเมื่อปิดเกม
-* **Contextual Feedback:** เพิ่ม Sound Effect และอนิเมชั่นเวลาสลับของหรือใช้ไอเทม (Game Juice)
-* **Advanced Stacking:** ฟีเจอร์การแบ่งกองไอเทม (Split Stack) เพื่อการจัดการไอเทมที่ละเอียดขึ้น
+### 📊 Time Estimation
+* **Status:** Work in Progress
+* **Estimated Time to Completion (ETC):** 6-7 Hours
+* **Target Deadline:** [ระบุวัน/เวลาที่จะส่ง เช่น Feb 28, 24:00]
