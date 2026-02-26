@@ -80,9 +80,50 @@ A data-driven inventory system focused on **Data Consistency** and responsive us
 
 ---
 
-## ⚔️ System 3: Combat System (In Progress)
+# ⚔️ System 3: Combat System & AI Integration
 
-### 📊 Time Estimation
-* **Status:** Work in Progress
-* **Estimated Time to Completion (ETC):** 6-7 Hours
-* **Target Deadline:** [ระบุวัน/เวลาที่จะส่ง เช่น Feb 28, 24:00]
+A robust combat framework focused on **Event-Driven Architecture** and seamless integration between player resources and enemy behavior.
+
+## 🎮 Controls & Interaction (For Testing)
+
+* **Wand Attack:** Use the Wand to fire projectiles; each shot consumes **10 AP**.
+* **Health Recovery:**
+    * **Zone Exit:** Walk out of the designated combat area to instantly restore **HP** and **AP** to 100.
+    * **Time Transition:** Changing the game time triggers an automatic full recovery via the `TimeManager`.
+* **Enemy Interaction:**
+    * **Chase:** Slimes automatically track and move toward the player when within `detectionRange`.
+    * **Contact Damage:** Being touched by a Slime (Trigger) reduces player HP by **5**.
+
+## 🏗️ Initial Planning
+
+* **Decoupled Logic:** Utilized `UnityEvent` in the `Health` script to allow UI and special effects to trigger without hard-coding dependencies.
+* **Resource Management:** Established a clear link between weapon usage and player `AP` to prevent infinite attacking.
+* **AI Complexity:** Designed the Slime to have a "Death-to-Split" cycle, increasing combat intensity as the fight progresses.
+
+## 📊 Task Breakdown & Time Log
+
+| Phase | Task Details | Estimated | Actual |
+| :--- | :--- | :--- | :--- |
+| **1. Health & Damage** | Implemented `Health.cs` with `TakeDamage` and `UnityEvents` for UI/Death. | 1 hr | 1 hr |
+| **2. Slime AI** | Developed `SlimeAI` for player chasing and `OnTriggerEnter2D` damage logic. | 30 min. | 1 hr |
+| **3. System Integration**| Linked Combat Zone and Time Manager to auto-reset player stats. | 30 min. | 1 hr |
+| **4. Splitting Logic** | Created `SlimeSplitter` to spawn small slimes upon big slime death. | 1 hr | 1 hr |
+
+**Estimated Time:** 3 Hours
+**Actual Time:** 4Hours
+
+## 📝 Reflection
+
+* **Trigger over Collision:** I opted for **Trigger-based damage** (`OnTriggerEnter2D`) to allow the Slime to overlap the player for damage detection without physical "bumping" or pushing the player through the map.
+* **Visual Feedback:** Initially, I thought the HP wasn't decreasing because it wasn't updating in real-time on the UI. I learned that data-driven systems must be explicitly linked to UI elements via events.
+
+## 🧠 Assumptions & Challenges
+
+* **Observer Pattern:** Used `UnityEvent` and C# Actions to ensure health resets happen precisely when events occur, avoiding expensive per-frame checks.
+* **Tagging Discipline:** The system relies strictly on the **"Player"** tag; if the player object is untagged, the AI's detection and damage logic will fail.
+* **Single Source of Truth:** The `Health` script is the only authority for HP values, preventing "Data Desync" between the AI's damage and the Player's state.
+
+## 🚀 Future Improvements
+
+* **Knockback System:** Adding a physics impulse when the player takes damage to improve "Game Feel."
+* **Invincibility Frames:** Implementing a brief cooldown (I-Frames) after taking damage
