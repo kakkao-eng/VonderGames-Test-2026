@@ -19,7 +19,13 @@ An **Event-Based** time system designed to manage game progression, NPC schedule
 | **2. Implementation** | Developed `TimeManager` and logic to wrap hours back to zero upon a new day. | 2 hrs |
 | **3. Integration** | Created the UI time display and environmental lighting synchronization. | 2 hrs |
 
-**Actual Time Spent: 5 Hours**
+---
+
+### ⏱️ Time Summary
+* **Total Estimated Time:** 3 Hours
+* **Total Actual Time:** 4 Hours
+
+---
 
 ### 📝 Reflection
 * **Code Organization:** Spent extra time refactoring Enums to be independent, making it much easier to connect future systems (like crop growth) to the time data.
@@ -51,7 +57,13 @@ A robust, data-driven inventory system that syncs item data with a responsive UI
 | **2. UI Rendering** | Created the Inventory panel, Hotbar, and Item quantity text (TMPro). | 2 hrs |
 | **3. Interaction** | Implemented **Full Drag-and-Drop** and fixed mouse-blocking issues. | 3 hrs |
 
-**Total Development Time: 6 Hours**
+---
+
+### ⏱️ Time Summary
+* **Total Estimated Time:** 4 Hours
+* **Total Actual Time:** 5 Hours
+
+---
 
 ### 📝 Lessons Learned (Reflection)
 - **The Challenge:** While implementing the "DragIcon" (the icon that follows the mouse), I encountered a bug where items wouldn't "Drop" into slots because the DragIcon itself was blocking the mouse signal.
@@ -87,7 +99,13 @@ A robust combat framework focused on **Event-Driven Architecture** and seamless 
 | **3. Integration** | Linked Combat Zone and Time Manager to auto-reset player stats. | 1 hr |
 | **4. Splitting Logic** | Created `SlimeSplitter` to spawn mini-slimes upon parent death. | 1 hr |
 
-**Actual Time Spent: 4 Hours**
+---
+
+### ⏱️ Time Summary
+* **Total Estimated Time:** 3 Hours
+* **Total Actual Time:** 4 Hours
+
+---
 
 ### 📝 Reflection
 - **Trigger vs. Collision:** I opted for **Trigger-based damage** (`OnTriggerEnter2D`) to allow Slimes to overlap the player for damage detection. This prevents awkward physics "bumping" or the enemy accidentally pushing the player through walls.
