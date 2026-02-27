@@ -130,7 +130,19 @@ A modular framework connecting "Inventory Resources" to "World Objects," allowin
 
 ### 📊 Task Breakdown & Time Log
 
-**Total Estimated Time:** 6 Hours
+### 📊 Task Breakdown & Time Log
+
+| Phase | Task Details | Estimated Time | Actual Time |
+| :--- | :--- | :--- | :--- |
+| **1. Logic & Data** | Created `CraftingRecipe` (SO) and resource validation logic. | 1.0 hr | 1.5 hrs |
+| **2. Inventory Flow** | Enhanced `SwapSlots` and item usage workflow. | 1.0 hr | 1.5 hrs |
+| **3. Placement System** | Developed 2D instantiation and Prefab management. | 1.0 hr | 1.0 hr |
+| **4. Bug Fixing** | Resolved Raycast blocking and missing icon issues. | 0.5 hr | 1.0 hr |
+
+---
+
+### ⏱️ Time Summary
+* **Total Estimated Time:** 6 Hours
 * **Total Actual Time:** 10 Hours
 * **Variance:** +1.5 Hours (due to complex UI interaction debugging and item data configuration).
 
