@@ -104,23 +104,57 @@ A robust combat framework focused on **Event-Driven Architecture** and seamless 
 ---
 ---
 
-## 🛠️ System 4: Crafting System
-Implemented a dual-mode crafting system supporting both **Instant Crafting** and **Station-Based Crafting**.
+## 🛠️ System 4: Crafting & Placement System
+A modular framework connecting "Inventory Resources" to "World Objects," allowing players to craft items and physically place them (e.g., Storage Chests) into the game environment with precision.
 
-### 🎮 Mechanics
-* **Instant Crafting:** Allows players to craft essential items (like Storage Chests) directly from the inventory if they have enough resources (e.g., 10x Lumber).
-* **Station Crafting:** Certain recipes require the player to be near a "Crafting Station" trigger zone to proceed.
-* **Recipe System:** Uses `ScriptableObjects` to define ingredients, results, and amounts, making the system easily expandable.
+---
+
+### 🎮 Controls & Testing Guide
+| Action | Input (Key) | Description |
+| :--- | :--- | :--- |
+| **Open Menu** | `TAB` or `C` | Toggle the Inventory and Crafting UI panels. |
+| **Craft Item** | `Mouse Click` | Select a recipe and click 'Craft' (e.g., Requires 10x Lumber for a Chest). |
+| **Switch Station** | `E` | Interaction key to switch crafting modes or access specific Crafting Stations. |
+| **Move Items** | `Left Click Hold` | Drag and drop items to swap slots (Supports newly crafted items). |
+| **Select Slot** | `1-9` | Select a specific Hotbar slot to prepare for item usage. |
+| **Place Object**| `1-9` + `Click` | While holding a placeable item (Chest), click to deploy it near the player. |
+
+---
+
+### 🏗️ Technical Architecture
+* **State-Based Use Logic:** Implemented a `switch-case` system within the Manager to handle distinct item behaviors (Seed, Tool, Crafted) based on `ItemType`, ensuring easy scalability.
+* **Value-Based Data Swap:** Developed a **"Value Copy"** swapping method instead of reference swapping to fix UI desync issues and ensure crafted items remain interactable.
+* **Singleton Managers:** Utilized `PlacementManager` as a Singleton to centralize object spawning logic, reducing code redundancy across different item types.
+
+---
 
 ### 📊 Task Breakdown & Time Log
+
 | Phase | Task Details | Time Spent |
 | :--- | :--- | :--- |
-| **1. Logic & Data** | Created `CraftingRecipe` (ScriptableObject) and `CraftingManager`. | 1.5 hrs |
-| **2. Validation** | Implemented `CanCraft` to check for required resources before consuming items. | 1 hr |
-| **3. Station Logic** | Added proximity checks (`isNearCraftingStation`) for location-based crafting. | 0.5 hr |
+| **1. Logic & Data** | Created `CraftingRecipe` (SO) and resource validation logic. | 1.0 hr |
+| **2. Inventory Flow** | Enhanced `SwapSlots` and item usage workflow. | 1.5 hrs |
+| **3. Placement System** | Developed 2D instantiation and Prefab management. | 1.0 hr |
+| **4. Bug Fixing** | Resolved Raycast blocking and missing icon issues. | 0.5 hr |
 
-**Actual Time Spent: 3 Hours**
+**Total Estimated Time:** 6 Hours
+* **Total Actual Time:** 10 Hours
+* **Variance:** +1.5 Hours (due to complex UI interaction debugging and item data configuration).
+
+---
 
 ### 📝 Reflection
-* **String-Based Comparison:** Used item names to identify ingredients, ensuring the system can interact with any item in the `InventoryManager`.
-* **Resource Safety:** Verified that ingredients are only consumed if the full recipe requirements are met, preventing item loss.
+* **Reference vs. Value:** Swapping List positions (References) often confused the UI. Switching to **Value-based swapping** (copying ItemData & Quantity) provided a much more stable experience.
+* **Raycast Management:** Discovered that drag-and-drop failures were often caused by the `DragIcon` blocking itself. Disabling **Raycast Target** on dragging elements is a crucial UI technique.
+
+---
+
+### ⚠️ Assumptions & Challenges
+* **Icon Dependency:** Every `ItemData` must have a Sprite assigned; otherwise, the `EventSystem` cannot detect clicks for dragging.
+* **Prefab Configuration:** `Crafted` items must have a valid Prefab assigned in their ScriptableObject to enable world placement functionality.
+
+---
+
+### 🚀 Future Improvements
+* **Grid Snapping:** Implementing a grid-based system for perfectly aligned object placement.
+* **Persistence (Save/Load):** Saving world object positions to ensure placed chests remain after restarting the game.
