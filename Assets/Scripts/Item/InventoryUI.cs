@@ -21,12 +21,13 @@ public class InventoryUI : MonoBehaviour
     [Tooltip("Image ที่จะลอยตามเมาส์เวลาลาก (ต้องปิด Raycast Target ใน Inspector)")]
     public Image dragIcon;
     private int draggingIndex = -1;
+    private bool draggingFromStorage = false;
 
     [Header("State")]
     private bool isInventoryOpen = false;
     private int selectedSlotIndex = 0;
     private List<InventorySlotUI> slotUIComponents = new List<InventorySlotUI>();
-    
+
 
     void Awake()
     {
@@ -119,12 +120,17 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    void ToggleInventory()
+    public void ToggleInventory(bool open)
     {
-        isInventoryOpen = !isInventoryOpen;
+        isInventoryOpen = open;
         if (fullInventoryPanel != null) fullInventoryPanel.SetActive(isInventoryOpen);
 
-        // จัดการเมาส์: ถ้าเปิดกระเป๋าให้เห็นเมาส์ ถ้าปิดให้ล็อกเมาส์ไว้กลางจอ
+        // ถ้าปิดกระเป๋า ให้สั่งปิดหน้าต่างหีบด้วยเสมอ เพื่อกันบัค Hierarchy ค้าง
+        if (!isInventoryOpen && StorageUI.Instance != null)
+        {
+            StorageUI.Instance.storagePanel.SetActive(false);
+        }
+
         Cursor.visible = isInventoryOpen;
         Cursor.lockState = isInventoryOpen ? CursorLockMode.None : CursorLockMode.Locked;
     }
@@ -147,15 +153,16 @@ public class InventoryUI : MonoBehaviour
 
     // --- ส่วนของระบบ Drag & Drop ---
 
-    public void StartDragging(int index)
+    public void StartDragging(int index, bool fromStorage, Sprite icon)
     {
-        // ถ้าช่องที่พยายามลากไม่มีของ ก็ไม่ต้องทำอะไร
-        if (InventoryManager.Instance.slots[index].IsEmpty) return;
-
         draggingIndex = index;
-        dragIcon.sprite = InventoryManager.Instance.slots[index].item.icon;
+        draggingFromStorage = fromStorage; // จำไว้ว่าลากมาจากไหน
+        dragIcon.sprite = icon;
         dragIcon.gameObject.SetActive(true);
+        dragIcon.transform.SetAsLastSibling(); // ให้รูปอยู่หน้าสุดเสมอ
     }
+
+    public bool IsDraggingFromStorage() => draggingFromStorage;
 
     public void UpdateDragPosition(Vector2 position)
     {
@@ -173,18 +180,30 @@ public class InventoryUI : MonoBehaviour
 
     public void DropOnSlot(int targetIndex)
     {
-        // ถ้ามีการลากอยู่ และวางลงในคนละช่องกับที่เริ่มลาก
         if (draggingIndex != -1 && draggingIndex != targetIndex)
         {
-            // สั่งให้ Manager สลับข้อมูลใน List จริงๆ
+            // เรียกใช้ตัวที่เพิ่งสร้างใหม่
             InventoryManager.Instance.SwapSlots(draggingIndex, targetIndex);
         }
     }
 
-    // เพิ่มฟังก์ชันนี้ลงใน InventoryUI.cs
     public int GetSelectedIndex()
     {
-        return selectedSlotIndex;
+        return draggingIndex;
     }
+
+
+    public void ToggleInventory()
+    {
+        // สั่งให้มันทำงานโดยส่งค่า "ตรงข้าม" ของสถานะปัจจุบันเข้าไป
+        ToggleInventory(!isInventoryOpen);
+    }
+
+    public void SetCursorState(bool isOpen)
+    {
+        Cursor.visible = isOpen;
+        Cursor.lockState = isOpen ? CursorLockMode.None : CursorLockMode.Locked;
+    }
+
 
 }

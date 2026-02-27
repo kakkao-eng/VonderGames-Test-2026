@@ -302,6 +302,7 @@ MonoBehaviour:
   itemIcon: {fileID: 4219886741307676686}
   quantityText: {fileID: 754375085436753561}
   highlight: {fileID: 5657291273738670062}
+  isStorageSlot: 0
 --- !u!1 &3520004184594757069
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Recipe_StorageChest
   m_EditorClassIdentifier: 
   recipeName: Storage Chest
-  recipeIcon: {fileID: 0}
+  recipeIcon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  resultItem: {fileID: 11400000, guid: 80e58ebfa52481e41a7520ab0febbba7, type: 2}
+  resultAmount: 1
   ingredients:
-  - itemName: Lumber
+  - item: {fileID: 11400000, guid: 5a60f977aef7d71429706034ff5c36f2, type: 2}
     amount: 10
