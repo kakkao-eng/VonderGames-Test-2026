@@ -130,8 +130,6 @@ A modular framework connecting "Inventory Resources" to "World Objects," allowin
 
 ### 📊 Task Breakdown & Time Log
 
-### 📊 Task Breakdown & Time Log
-
 | Phase | Task Details | Estimated Time | Actual Time |
 | :--- | :--- | :--- | :--- |
 | **1. Logic & Data** | Created `CraftingRecipe` (SO) and resource validation logic. | 1.0 hr | 1.5 hrs |
