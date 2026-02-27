@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 787376441a4275e45aab58cf8c5dd0af, type: 3}
-  m_Name: Lumber
+  m_Name: Storage Chest
   m_EditorClassIdentifier: 
-  itemName: Lumber
-  icon: {fileID: 0}
-  itemType: 0
+  itemName: Storage Chest
+  icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  itemType: 3
   maxStack: 10
+  prefabToPlace: {fileID: 8587801233317708651, guid: ba8a2f3c2863209448db1a8034b3b92a, type: 3}

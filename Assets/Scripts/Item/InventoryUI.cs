@@ -1,19 +1,33 @@
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI; 
 public class InventoryUI : MonoBehaviour
 {
     public static InventoryUI Instance;
 
-    [Header("Settings")]
+    [Header("UI Panels & Prefabs")]
+    [Tooltip("Panel รวมที่เอาไว้ เปิด/ปิด ตอนกด Tab")]
+    public GameObject fullInventoryPanel;
+    [Tooltip("Prefab ของช่องเก็บของ (Slot)")]
     public GameObject slotPrefab;
-    public Transform slotParent;
 
+    [Header("Parent Transforms")]
+    [Tooltip("ที่อยู่ของช่องเก็บของ 2 แถวบน (Index 10-29)")]
+    public Transform mainInventoryParent;
+    [Tooltip("ที่อยู่ของช่อง Hotbar แถวล่าง (Index 0-9)")]
+    public Transform hotbarParent;
+
+    [Header("Drag & Drop Settings")]
+    [Tooltip("Image ที่จะลอยตามเมาส์เวลาลาก (ต้องปิด Raycast Target ใน Inspector)")]
+    public Image dragIcon;
+    private int draggingIndex = -1;
+    private bool draggingFromStorage = false;
+
+    [Header("State")]
+    private bool isInventoryOpen = false;
     private int selectedSlotIndex = 0;
-
-    private int firstSelectedIndex = -1;
-
     private List<InventorySlotUI> slotUIComponents = new List<InventorySlotUI>();
+
 
     void Awake()
     {
@@ -22,67 +36,111 @@ public class InventoryUI : MonoBehaviour
 
     void Start()
     {
+        // 1. สร้างช่องเก็บของทั้งหมด (ทำครั้งเดียวตอนเริ่ม)
         CreateSlots();
 
-        // Subscribe เหตุการณ์เมื่อของในกระเป๋าเปลี่ยน ให้ Update UI ทันที
+        // 2. สมัครรับข้อมูลเมื่อ Inventory ใน Manager มีการเปลี่ยนแปลง
         if (InventoryManager.Instance != null)
         {
             InventoryManager.Instance.OnInventoryChanged += UpdateUI;
         }
 
+        // 3. ตั้งค่าเริ่มต้น: ปิดหน้าต่างใหญ่ และปิด Icon ลากวาง
+        if (fullInventoryPanel != null) fullInventoryPanel.SetActive(false);
+        if (dragIcon != null) dragIcon.gameObject.SetActive(false);
+
         UpdateUI();
         UpdateHighlight();
     }
 
-    void CreateSlots()
-    {
-        // ล้างช่องเก่าทิ้งก่อนเริ่ม (Modularity)
-        foreach (Transform child in slotParent) Destroy(child.gameObject);
-        slotUIComponents.Clear();
-
-        for (int i = 0; i < InventoryManager.Instance.inventorySize; i++)
-        {
-            GameObject go = Instantiate(slotPrefab, slotParent);
-            InventorySlotUI ui = go.GetComponent<InventorySlotUI>();
-
-            if (ui != null)
-            {
-                slotUIComponents.Add(ui);
-            }
-            else
-            {
-                Debug.LogError("Slot Prefab is missing InventorySlotUI component!");
-            }
-        }
-    }
-
-    // ฟังก์ชันอัปเดตหน้าตา UI ทั้งหมด
-    void UpdateUI()
-    {
-        var slotsData = InventoryManager.Instance.slots;
-
-        for (int i = 0; i < slotUIComponents.Count; i++)
-        {
-            slotUIComponents[i].SetSlot(slotsData[i], i);
-        }
-    }
-
     void Update()
     {
-        // ตรวจสอบการกดปุ่ม 1-9
-        for (int i = 0; i < slotUIComponents.Count; i++)
+        // ระบบเปิด/ปิดกระเป๋าด้วยปุ่ม Tab
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
-            if (i < 9 && Input.GetKeyDown(KeyCode.Alpha1 + i))
+            ToggleInventory();
+        }
+
+        // ระบบกดเลข 1-9 เพื่อเลือก Hotbar
+        for (int i = 0; i < 9; i++)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1 + i))
             {
                 SelectSlot(i);
             }
         }
+
+        // ระบบกดเลข 0 เพื่อเลือก Hotbar ช่องที่ 10 (Index 9)
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            SelectSlot(9);
+        }
+
+        // ถ้ากำลังลากของอยู่ ให้รูปภาพวิ่งตามเมาส์
+        if (draggingIndex != -1)
+        {
+            UpdateDragPosition(Input.mousePosition);
+        }
+    }
+
+    void CreateSlots()
+    {
+        // ล้างช่องเก่าทิ้งก่อน (ถ้ามี)
+        foreach (Transform child in mainInventoryParent) Destroy(child.gameObject);
+        foreach (Transform child in hotbarParent) Destroy(child.gameObject);
+        slotUIComponents.Clear();
+
+        // วนลูปสร้างช่องตามจำนวนที่ Manager กำหนด
+        for (int i = 0; i < InventoryManager.Instance.inventorySize; i++)
+        {
+            // ถ้า i < 10 ลง Hotbar, ถ้ามากกว่านั้นลงแผงใหญ่
+            Transform targetParent = (i < 10) ? hotbarParent : mainInventoryParent;
+
+            GameObject go = Instantiate(slotPrefab, targetParent);
+            InventorySlotUI ui = go.GetComponent<InventorySlotUI>();
+
+            if (ui != null)
+            {
+                ui.SetIndex(i); // บอกช่องว่ามันคือช่องลำดับที่เท่าไหร่
+                slotUIComponents.Add(ui);
+            }
+        }
+    }
+
+    public void UpdateUI()
+    {
+        // ดึงข้อมูลล่าสุดจาก Manager มาวาดใหม่ทุกช่อง
+        var slotsData = InventoryManager.Instance.slots;
+        for (int i = 0; i < slotUIComponents.Count; i++)
+        {
+            if (i < slotsData.Count)
+            {
+                slotUIComponents[i].UpdateSlot(slotsData[i]);
+            }
+        }
+    }
+
+    public void ToggleInventory(bool open)
+    {
+        isInventoryOpen = open;
+        if (fullInventoryPanel != null) fullInventoryPanel.SetActive(isInventoryOpen);
+
+        // ถ้าปิดกระเป๋า ให้สั่งปิดหน้าต่างหีบด้วยเสมอ เพื่อกันบัค Hierarchy ค้าง
+        if (!isInventoryOpen && StorageUI.Instance != null)
+        {
+            StorageUI.Instance.storagePanel.SetActive(false);
+        }
+
+        Cursor.visible = isInventoryOpen;
+        Cursor.lockState = isInventoryOpen ? CursorLockMode.None : CursorLockMode.Locked;
     }
 
     void SelectSlot(int index)
     {
         selectedSlotIndex = index;
         UpdateHighlight();
+        // แจ้ง Manager ว่ากำลังใช้งานช่องนี้อยู่
+        InventoryManager.Instance.UseItem(index);
     }
 
     void UpdateHighlight()
@@ -93,34 +151,59 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    public int GetSelectedIndex() => selectedSlotIndex;
+    // --- ส่วนของระบบ Drag & Drop ---
 
-    public InventorySlot GetSelectedSlot()
+    public void StartDragging(int index, bool fromStorage, Sprite icon)
     {
-        return InventoryManager.Instance.slots[selectedSlotIndex];
+        draggingIndex = index;
+        draggingFromStorage = fromStorage; // จำไว้ว่าลากมาจากไหน
+        dragIcon.sprite = icon;
+        dragIcon.gameObject.SetActive(true);
+        dragIcon.transform.SetAsLastSibling(); // ให้รูปอยู่หน้าสุดเสมอ
     }
 
-    public void OnSlotClicked(int index)
+    public bool IsDraggingFromStorage() => draggingFromStorage;
+
+    public void UpdateDragPosition(Vector2 position)
     {
-        if (firstSelectedIndex == -1)
+        if (draggingIndex != -1 && dragIcon != null)
         {
-            // คลิกครั้งแรก: เลือกช่องที่จะย้าย
-            if (InventoryManager.Instance.slots[index].IsEmpty) return; // ถ้าช่องว่างไม่ต้องเลือก
-
-            firstSelectedIndex = index;
-            Debug.Log("Selected slot: " + index + " to swap.");
-
-        }
-        else
-        {
-            // คลิกครั้งที่สอง: สลับที่!
-            InventoryManager.Instance.SwapSlots(firstSelectedIndex, index);
-
-            Debug.Log("Swapped " + firstSelectedIndex + " with " + index);
-
-            // รีเซ็ตค่าเพื่อเริ่มใหม่
-            firstSelectedIndex = -1;
-            UpdateUI();
+            dragIcon.transform.position = position;
         }
     }
+
+    public void EndDragging()
+    {
+        draggingIndex = -1;
+        if (dragIcon != null) dragIcon.gameObject.SetActive(false);
+    }
+
+    public void DropOnSlot(int targetIndex)
+    {
+        if (draggingIndex != -1 && draggingIndex != targetIndex)
+        {
+            // เรียกใช้ตัวที่เพิ่งสร้างใหม่
+            InventoryManager.Instance.SwapSlots(draggingIndex, targetIndex);
+        }
+    }
+
+    public int GetSelectedIndex()
+    {
+        return draggingIndex;
+    }
+
+
+    public void ToggleInventory()
+    {
+        // สั่งให้มันทำงานโดยส่งค่า "ตรงข้าม" ของสถานะปัจจุบันเข้าไป
+        ToggleInventory(!isInventoryOpen);
+    }
+
+    public void SetCursorState(bool isOpen)
+    {
+        Cursor.visible = isOpen;
+        Cursor.lockState = isOpen ? CursorLockMode.None : CursorLockMode.Locked;
+    }
+
+
 }
