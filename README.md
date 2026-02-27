@@ -1,4 +1,4 @@
-# 🧙‍♂️ 2026 Game Developer Technical Test – Aether Wizard Life
+# 🧙‍♂️ 2026 Game Developer Technical Test – Vonder Games
 
 A modular 2D side-scroller project focusing on scalable architecture and efficient data management.
 
